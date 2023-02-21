@@ -1,7 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 const AddNote = () => {
-  const { register, handleSubmit, watch } = useForm();
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
   console.log(watch("example"));
   const onSubmit = (data) => console.log(data);
   return (
@@ -22,6 +27,7 @@ const AddNote = () => {
         placeholder="Category"
         {...register("category")}
       />
+      {errors.exampleRequired && <span>This field is required</span>}
       <input type="submit" />
     </form>
   );
