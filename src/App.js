@@ -1,5 +1,7 @@
 import React from "react";
+import { Provider } from "react-redux";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import mystore from "./redux/store";
 import Home from "./Home";
 import Login from "./Login";
 import Register from "./Register";
@@ -23,7 +25,11 @@ const App = () => {
       element: <Home />,
     },
   ]);
-  return <RouterProvider router={router} />;
+  return (
+    <Provider store={mystore}>
+      <RouterProvider router={router} />
+    </Provider>
+  );
 };
 
 export default App;
