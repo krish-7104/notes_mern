@@ -1,11 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { addNewNote } from "../redux/actions";
+import { addNewNote, updateNote, editDataHandler } from "../redux/actions";
 
 const AddNewNote = (props) => {
+  const { editData } = useSelector((state) => state);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
@@ -15,28 +16,65 @@ const AddNewNote = (props) => {
   } = useForm();
   const onSubmit = async (noteData) => {
     if (localStorage.getItem("token")) {
-      try {
-        const data = await fetch("http://localhost:5000/api/notes/addnote", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "auth-token": localStorage.getItem("token"),
-          },
-          body: JSON.stringify(noteData),
-        });
-        const jsonData = await data.json();
-        if (data.status === 200) {
-          dispatch(addNewNote(jsonData));
+      if (editData.edit) {
+        try {
+          const data = await fetch(
+            `http://localhost:5000/api/notes/updatenote/${editData.id}`,
+            {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                "auth-token": localStorage.getItem("token"),
+              },
+              body: JSON.stringify(noteData),
+            }
+          );
+          const jsonData = await data.json();
+          if (data.status === 200) {
+            dispatch(
+              updateNote({
+                title: editData.title,
+                description: editData.description,
+                tag: editData.tag,
+                id: editData.id,
+              })
+            );
+            dispatch(editDataHandler({}));
+            toast.dismiss();
+            toast.success("Note Updated Successfully");
+            props.setOpen(false);
+          } else {
+            toast.dismiss();
+            toast.error(jsonData.error);
+          }
+        } catch (error) {
           toast.dismiss();
-          toast.success("Note Added Successfully");
-          props.setOpen(false);
-        } else {
-          toast.dismiss();
-          toast.error(jsonData.error);
+          toast.error(error.message);
         }
-      } catch (error) {
-        toast.dismiss();
-        toast.error(error.message);
+      } else {
+        try {
+          const data = await fetch("http://localhost:5000/api/notes/addnote", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "auth-token": localStorage.getItem("token"),
+            },
+            body: JSON.stringify(noteData),
+          });
+          const jsonData = await data.json();
+          if (data.status === 200) {
+            dispatch(addNewNote(jsonData));
+            toast.dismiss();
+            toast.success("Note Added Successfully");
+            props.setOpen(false);
+          } else {
+            toast.dismiss();
+            toast.error(jsonData.error);
+          }
+        } catch (error) {
+          toast.dismiss();
+          toast.error(error.message);
+        }
       }
     } else {
       navigate("/register");
@@ -49,7 +87,7 @@ const AddNewNote = (props) => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <h2 className="text-gray-900 text-2xl mb-4 font-medium title-font">
-          {props.update ? "Update A Note" : "Add A New Note"}
+          {editData.edit ? "Update A Note" : "Add A New Note"}
         </h2>
         <div className="relative mb-4 w-full">
           <label htmlFor="title" className="leading-7 text-sm text-gray-600">
@@ -57,6 +95,7 @@ const AddNewNote = (props) => {
           </label>
           <input
             {...register("title", { required: true })}
+            defaultValue={editData.edit ? editData.title : ""}
             type="text"
             id="title"
             name="title"
@@ -72,6 +111,7 @@ const AddNewNote = (props) => {
           </label>
           <input
             {...register("description", { required: true })}
+            defaultValue={editData.edit ? editData.description : ""}
             type="text"
             id="description"
             name="description"
@@ -83,8 +123,8 @@ const AddNewNote = (props) => {
             Tag
           </label>
           <input
-            defaultValue="General"
             {...register("tag", { required: true })}
+            defaultValue={editData.edit ? editData.tag : "General"}
             type="text"
             id="tag"
             name="tag"
@@ -96,7 +136,7 @@ const AddNewNote = (props) => {
           className="text-white bg-red-500 border-0 py-2 px-6 focus:outline-none hover:bg-red-600 rounded text-lg"
           type="submit"
         >
-          {props.update ? "Update Note" : "Add A Note"}
+          {editData.edit ? "Update Note" : "Add A Note"}
         </button>
       </form>
       <Toaster position="bottom-center" />

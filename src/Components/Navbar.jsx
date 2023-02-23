@@ -1,7 +1,8 @@
 import React from "react";
+import { toast, Toaster } from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { userDetails } from "../redux/actions";
+import { setNotes, userDetails } from "../redux/actions";
 const Navbar = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -9,6 +10,8 @@ const Navbar = () => {
   const logoutHandler = () => {
     localStorage.removeItem("token");
     dispatch(userDetails());
+    dispatch(setNotes([]));
+    toast.success("Logout Successfully");
   };
   return (
     <header className="text-gray-600 body-font">
@@ -66,7 +69,7 @@ const Navbar = () => {
               className="inline-flex items-center bg-gray-100 border-0 py-1 px-3 focus:outline-none hover:bg-gray-200 rounded text-base mt-4 md:mt-0"
               onClick={logoutHandler}
             >
-              My Account
+              Logout
               <svg
                 fill="none"
                 stroke="currentColor"
@@ -82,6 +85,7 @@ const Navbar = () => {
           </nav>
         )}
       </div>
+      <Toaster position="bottom-center" />
     </header>
   );
 };

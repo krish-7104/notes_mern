@@ -2,7 +2,7 @@ import React from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { MdDeleteOutline, MdEditNote } from "react-icons/md";
 import { useDispatch } from "react-redux";
-import { removeNote } from "../redux/actions";
+import { editDataHandler, removeNote } from "../redux/actions";
 
 const NoteCard = (props) => {
   const dispatch = useDispatch();
@@ -33,6 +33,19 @@ const NoteCard = (props) => {
     }
   };
   let date = new Date(props.timestamp);
+
+  const EditNotehandler = () => {
+    dispatch(
+      editDataHandler({
+        edit: true,
+        id: props.id,
+        title: props.title,
+        tag: props.tag,
+        description: props.description,
+      })
+    );
+    props.setOpen(true);
+  };
   return (
     <div className="max-w-sm rounded overflow-hidden shadow-lg min-w-[350px]">
       <div className="px-6 py-4">
@@ -53,7 +66,10 @@ const NoteCard = (props) => {
           >
             <MdDeleteOutline />
           </span>
-          <span className="inline-block rounded-full py-1 text-2xl text-gray-700 mb-2 cursor-pointer hover:text-gray-500">
+          <span
+            className="inline-block rounded-full py-1 text-2xl text-gray-700 mb-2 cursor-pointer hover:text-gray-500"
+            onClick={EditNotehandler}
+          >
             <MdEditNote />
           </span>
         </div>

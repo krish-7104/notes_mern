@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import AddNewNote from "./Components/AddNewNote";
 import Navbar from "./Components/Navbar";
 import NoteCard from "./Components/NoteCard";
-import { userDetails } from "./redux/actions";
+import { setNotes, userDetails } from "./redux/actions";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -28,7 +28,7 @@ const Home = () => {
         });
         const jsonData = await data.json();
         if (data.status === 200) {
-          dispatch({ user: localStorage.getItem("token"), notes: jsonData });
+          dispatch(setNotes(jsonData));
         } else {
           toast.error(jsonData.error);
         }
@@ -42,13 +42,14 @@ const Home = () => {
   useEffect(() => {
     fetchNotesFromServer();
     setUserTokenHandler();
-  }, []);
+  }, [notes]);
 
   return (
     <>
       <Navbar />
       {!open && (
         <div className="flex gap-10 justify-center items-center my-6 flex-wrap">
+          {notes.length === 0 && <p>No Notes Found! Add A New Note</p>}
           {notes &&
             notes.map((note) => {
               return (
@@ -59,6 +60,7 @@ const Home = () => {
                   tag={note.tag}
                   timestamp={note.timestamp}
                   id={note._id}
+                  setOpen={setOpen}
                 />
               );
             })}

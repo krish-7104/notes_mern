@@ -1,7 +1,19 @@
-import { ADD_NOTE, REMOVE_NOTE, UPDATE_NOTE, USER_TOKEN } from "./action";
+import {
+  ADD_NOTE,
+  EDIT_DATA,
+  REMOVE_NOTE,
+  SET_NOTES,
+  UPDATE_NOTE,
+  USER_TOKEN,
+} from "./action";
 
-export const Reducers = (state = { user: "", notes: [] }, action) => {
+export const Reducers = (
+  state = { user: "", notes: [], editData: { edit: false } },
+  action
+) => {
   switch (action.type) {
+    case SET_NOTES:
+      return { ...state, notes: action.payload };
     case ADD_NOTE:
       return { ...state, notes: [...state.notes, action.payload] };
     case REMOVE_NOTE:
@@ -22,6 +34,8 @@ export const Reducers = (state = { user: "", notes: [] }, action) => {
       return state;
     case USER_TOKEN:
       return { ...state, user: action.payload };
+    case EDIT_DATA:
+      return { ...state, editData: action.payload };
     default:
       return state;
   }
