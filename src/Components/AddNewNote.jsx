@@ -33,10 +33,10 @@ const AddNewNote = (props) => {
           if (data.status === 200) {
             dispatch(
               updateNote({
-                title: editData.title,
-                description: editData.description,
-                tag: editData.tag,
-                id: editData.id,
+                title: noteData.title,
+                description: noteData.description,
+                tag: noteData.tag,
+                id: noteData.id,
               })
             );
             dispatch(editDataHandler({}));

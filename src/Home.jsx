@@ -42,7 +42,7 @@ const Home = () => {
   useEffect(() => {
     fetchNotesFromServer();
     setUserTokenHandler();
-  }, [notes]);
+  }, []);
 
   return (
     <>
