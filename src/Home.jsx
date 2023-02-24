@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import AddNewNote from "./Components/AddNewNote";
 import Navbar from "./Components/Navbar";
 import NoteCard from "./Components/NoteCard";
-import { setNotes, userDetails } from "./redux/actions";
+import { editDataHandler, setNotes, userDetails } from "./redux/actions";
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -44,6 +44,15 @@ const Home = () => {
     setUserTokenHandler();
   }, []);
 
+  const closeAddEditNoteHandler = () => {
+    setOpen(!open);
+    dispatch(
+      editDataHandler({
+        edit: false,
+      })
+    );
+  };
+
   return (
     <>
       <Navbar />
@@ -69,7 +78,7 @@ const Home = () => {
       {open && <AddNewNote setOpen={setOpen} />}
       <button
         className="flex mx-auto mt-16 text-white bg-red-500 border-0 py-1 px-4 focus:outline-none hover:bg-red-600 rounded text-lg absolute bottom-10 right-10"
-        onClick={() => setOpen(!open)}
+        onClick={closeAddEditNoteHandler}
       >
         {!open ? "Add Note" : "Close"}
       </button>
