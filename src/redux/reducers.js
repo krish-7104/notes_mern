@@ -22,16 +22,15 @@ export const Reducers = (
         notes: state.notes.filter((note) => note._id !== action.payload),
       };
     case UPDATE_NOTE:
-      console.log(action.payload);
-      // for (let i = 0; i < state.length; i++) {
-      //   const element = state[i];
-      //   if (element._id === action.payload.id) {
-      //     element.title = action.payload.title;
-      //     element.description = action.payload.description;
-      //     element.tag = action.payload.tag;
-      //     element.timestamp = Date.now();
-      //   }
-      // }
+      for (let i = 0; i < state.notes.length; i++) {
+        const element = state.notes[i];
+        if (element._id === action.payload.id) {
+          element.title = action.payload.title;
+          element.description = action.payload.description;
+          element.tag = action.payload.tag;
+          element.timestamp = Date.now();
+        }
+      }
       return state;
     case USER_TOKEN:
       return { ...state, user: action.payload };

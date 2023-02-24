@@ -36,7 +36,7 @@ const AddNewNote = (props) => {
                 title: noteData.title,
                 description: noteData.description,
                 tag: noteData.tag,
-                id: noteData.id,
+                id: editData.id,
               })
             );
             dispatch(editDataHandler({}));
